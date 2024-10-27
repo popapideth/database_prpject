@@ -82,6 +82,25 @@ app.post('/authen', jsonParser, function (req, res, next) {
     }
 });
 
+// -----------data-----------------
+app.get('/data', function(req, res, next){
+    connectData.query(`
+        SELECT 
+            companies.*, 
+            contacts.*, 
+            profile_changes.*, 
+            team_members.*
+        FROM 
+            companies
+        LEFT JOIN contacts ON companies.company_id = contacts.company_id
+        LEFT JOIN profile_changes ON companies.company_id = profile_changes.company_id
+        LEFT JOIN team_members ON companies.company_id = team_members.company_id
+    `, function(error, results, fields){
+        if(error) throw error;
+        res.json(results)
+    })
+})
+
 app.listen(4444, function () {
   console.log('CORS-enabled web server listening on port 4444')
 });
